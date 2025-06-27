@@ -5,6 +5,7 @@ compatibility_date = "2024-06-01"
 API_KEY = "123456"
 SENDER_EMAIL = "onboarding@resend.dev"
 
+
 [[d1_databases]]
 binding = "DB"  
 database_name = "correos"
