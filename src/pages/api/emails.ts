@@ -15,7 +15,9 @@ export async function GET({ request, locals }) {
 
   // Autenticación
   const auth = request.headers.get('Authorization');
-  if (!auth || auth !== `Bearer ${import.meta.env.API_KEY}`) {
+  const env = locals.runtime?.env;
+  
+  if (!env?.API_KEY || !auth || auth !== `Bearer ${env.API_KEY}`) {
     return new Response(
       JSON.stringify({ 
         message: "🔒 No autorizado",
