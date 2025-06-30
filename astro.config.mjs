@@ -9,5 +9,6 @@ import solidJs from '@astrojs/solid-js';
 export default defineConfig({
   output: 'server',
   adapter: cloudflare(),
-  integrations: [solidJs()]
+  integrations: [solidJs()],
+  mode: 'directory'
 });
