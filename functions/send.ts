@@ -1,7 +1,19 @@
+import type { PagesFunction } from '@cloudflare/workers-types';
+
 export const onRequestPost: PagesFunction = async ({ request, env }) => {
   const auth = request.headers.get('Authorization');
   if (auth !== `Bearer ${env.API_KEY}`) {
     return new Response(JSON.stringify({ error: 'No autorizado' }), { status: 401 });
+  }
+
+  // Verificación simple: si no hay body, retornar mensaje de test
+  if (request.headers.get('content-length') === '0') {
+    return new Response(JSON.stringify({
+      message: 'Servidor funcionando correctamente 🚀 (sin payload)'
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   let body;

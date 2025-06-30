@@ -1,3 +1,5 @@
+import type { PagesFunction } from '@cloudflare/workers-types';
+
 export const onRequestGet: PagesFunction = async ({ request, env }) => {
   const auth = request.headers.get('Authorization');
   if (auth !== `Bearer ${env.API_KEY}`) {
