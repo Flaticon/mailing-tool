@@ -6,10 +6,444 @@ import FormularioCorreo from '../components/FormularioCorreo.tsx';
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Correo Masivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Herramienta profesional para envío de correos masivos. Rápida, confiable y fácil de usar." />
+    <meta name="keywords" content="correo masivo, email marketing, newsletter, comunicación" />
+    <meta name="author" content="Tu Empresa" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Correo Masivo - Herramienta Profesional" />
+    <meta property="og:description" content="Envía correos masivos de forma profesional y eficiente" />
+    <meta property="og:url" content="https://tu-dominio.com" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Correo Masivo - Herramienta Profesional" />
+    <meta name="twitter:description" content="Envía correos masivos de forma profesional y eficiente" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <title>Correo Masivo Pro - Envía emails profesionales al instante</title>
+    
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --secondary: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: var(--gray-800);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header */
+      .header {
+        text-align: center;
+        padding: 60px 0 40px;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .header .subtitle {
+        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+        opacity: 0.95;
+        margin-bottom: 12px;
+        font-weight: 400;
+      }
+
+      .header .description {
+        font-size: clamp(0.95rem, 2vw, 1.1rem);
+        opacity: 0.8;
+        max-width: 600px;
+        margin: 0 auto;
+        font-weight: 300;
+      }
+
+      /* Features */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 40px 0;
+        padding: 0 20px;
+      }
+
+      .feature {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      .feature:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+        display: block;
+      }
+
+      .feature h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .feature p {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        font-weight: 300;
+      }
+
+      /* Main Content */
+      .main-content {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        margin: 40px 20px;
+        padding: 40px;
+        box-shadow: var(--shadow-xl);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .main-title {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .main-title h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 8px;
+      }
+
+      .main-title p {
+        color: var(--gray-600);
+        font-size: 1.1rem;
+      }
+
+      /* Stats */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 24px;
+        margin: 40px 0;
+        padding: 0 20px;
+      }
+
+      .stat {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 24px 16px;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .stat-number {
+        display: block;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 40px 20px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .footer p {
+        margin-bottom: 16px;
+        font-size: 0.95rem;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .footer-links a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header {
+          padding: 40px 0 20px;
+        }
+
+        .main-content {
+          margin: 20px 10px;
+          padding: 24px;
+          border-radius: 16px;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+          gap: 16px;
+          margin: 20px 0;
+        }
+
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+          margin: 20px 0;
+        }
+
+        .footer-links {
+          flex-direction: column;
+          gap: 12px;
+        }
+      }
+
+      /* Loading Animation */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fadeInUp {
+        animation: fadeInUp 0.8s ease-out forwards;
+      }
+
+      /* Utilities */
+      .text-gradient {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    </style>
   </head>
+  
   <body>
-    <h1>Envío de correos masivos</h1>
-    <FormularioCorreo client:load />
+    <div class="container">
+      <!-- Header -->
+      <header class="header animate-fadeInUp">
+        <h1>📧 Correo Masivo Pro</h1>
+        <p class="subtitle">Herramienta profesional para email marketing</p>
+        <p class="description">
+          Envía miles de correos personalizados de forma rápida, segura y eficiente. 
+          Perfecto para newsletters, promociones y comunicaciones empresariales.
+        </p>
+      </header>
+
+      <!-- Features -->
+      <section class="features">
+        <div class="feature">
+          <span class="feature-icon">⚡</span>
+          <h3>Envío Rápido</h3>
+          <p>Procesa miles de correos en segundos con nuestra infraestructura optimizada</p>
+        </div>
+        
+        <div class="feature">
+          <span class="feature-icon">🎯</span>
+          <h3>Alta Entregabilidad</h3>
+          <p>Máximo porcentaje de entrega con sistemas anti-spam profesionales</p>
+        </div>
+        
+        <div class="feature">
+          <span class="feature-icon">📊</span>
+          <h3>Analytics en Tiempo Real</h3>
+          <p>Monitorea aperturas, clics y estadísticas detalladas de tus campañas</p>
+        </div>
+        
+        <div class="feature">
+          <span class="feature-icon">🔒</span>
+          <h3>100% Seguro</h3>
+          <p>Encriptación de datos y cumplimiento total con regulaciones GDPR</p>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="stats">
+        <div class="stat">
+          <span class="stat-number">99.9%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        
+        <div class="stat">
+          <span class="stat-number">10K+</span>
+          <span class="stat-label">Correos/Min</span>
+        </div>
+        
+        <div class="stat">
+          <span class="stat-number">500+</span>
+          <span class="stat-label">Clientes</span>
+        </div>
+        
+        <div class="stat">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Soporte</span>
+        </div>
+      </section>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="main-title">
+          <h2>🚀 Comienza a enviar ahora</h2>
+          <p>Completa el formulario y envía tu primera campaña en menos de 2 minutos</p>
+        </div>
+        
+        <FormularioCorreo client:load />
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>&copy; 2025 Correo Masivo Pro. Todos los derechos reservados.</p>
+        <div class="footer-links">
+          <a href="/privacy">Privacidad</a>
+          <a href="/terms">Términos</a>
+          <a href="/support">Soporte</a>
+          <a href="/api">API</a>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      // Animaciones suaves al cargar
+      document.addEventListener('DOMContentLoaded', function() {
+        const elements = document.querySelectorAll('.feature, .stat');
+        elements.forEach((el, index) => {
+          el.style.animationDelay = `${index * 0.1}s`;
+          el.classList.add('animate-fadeInUp');
+        });
+
+        // Mostrar estadísticas con efecto contador
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+          const target = stat.textContent;
+          let current = 0;
+          const increment = target.includes('K') ? 100 : 
+                           target.includes('%') ? 1 : 
+                           target.includes('/') ? 1 : 1;
+          
+          const timer = setInterval(() => {
+            current += increment;
+            const displayValue = target.includes('K') ? `${(current/1000).toFixed(1)}K+` :
+                               target.includes('%') ? `${Math.min(current, 99.9)}%` :
+                               target.includes('/') ? `${Math.min(current, 24)}/7` :
+                               `${Math.min(current, 500)}+`;
+            
+            stat.textContent = displayValue;
+            
+            if ((target.includes('K') && current >= 10000) ||
+                (target.includes('%') && current >= 99.9) ||
+                (target.includes('/') && current >= 24) ||
+                (!target.includes('K') && !target.includes('%') && !target.includes('/') && current >= 500)) {
+              clearInterval(timer);
+              stat.textContent = target;
+            }
+          }, 50);
+        });
+      });
+
+      // Smooth scroll para enlaces internos
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    </script>
   </body>
 </html>
