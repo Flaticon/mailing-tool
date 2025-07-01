@@ -1,5 +1,6 @@
 ---
-import FormularioCorreo from '../components/FormularioCorreo.tsx';
+import Layout from '../layouts/Layout.astro';
+import BulkEmailForm from '../components/BulkEmailForm';
 ---
 
 <!DOCTYPE html>
@@ -381,7 +382,7 @@ import FormularioCorreo from '../components/FormularioCorreo.tsx';
           <p>Completa el formulario y envía tu primera campaña en menos de 2 minutos</p>
         </div>
         
-        <FormularioCorreo client:load />
+        <BulkEmailForm client:load />
       </main>
 
       <!-- Footer -->
