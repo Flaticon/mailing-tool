@@ -83,7 +83,6 @@ const BulkEmailForm = () => {
       const response = await fetch('/api/send', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer ${env.API_KEY}',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload)
