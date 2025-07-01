@@ -76,13 +76,14 @@ const BulkEmailForm = () => {
 
       const payload = {
         subject: subject().trim(),
-        body: body().trim(),
+        content: body().trim(),
         emails: emailList
       };
 
       const response = await fetch('/api/send', {
         method: 'POST',
         headers: {
+          'Authorization': 'Bearer 123456',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload)
