@@ -1,16 +1,9 @@
 import type { APIRoute } from 'astro'
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ env }) => {
   try {
-    // Verificar bindings disponibles
-    const allKeys = Object.keys(globalThis)
-    const dbKeys = allKeys.filter(key => 
-      key.includes('DB') || key.includes('TRACK') || key.includes('EMAIL')
-    )
-    
-    // Intentar acceder a la base de datos
-    const emailTrackingDB = (globalThis as any).EMAIL_TRACKING
-    const regularDB = (globalThis as any).DB
+    const emailTrackingDB = env.EMAIL_TRACKING
+    const regularDB = env.DB
     
     let dbTest = null
     let error = null
@@ -19,7 +12,7 @@ export const GET: APIRoute = async () => {
       try {
         const result = await emailTrackingDB.prepare("SELECT 1 as test").first()
         dbTest = { success: true, result }
-      } catch (e) {
+      } catch (e: any) {
         error = e.message
         dbTest = { success: false, error: e.message }
       }
@@ -28,18 +21,17 @@ export const GET: APIRoute = async () => {
     return new Response(JSON.stringify({
       bindings: {
         EMAIL_TRACKING: !!emailTrackingDB,
-        DB: !!regularDB,
-        found_keys: dbKeys
+        DB: !!regularDB
       },
       database_test: dbTest,
-      error: error,
-      all_keys_sample: allKeys.slice(0, 30),
+      error,
+      env_keys: Object.keys(env),
       timestamp: new Date().toISOString()
     }, null, 2), {
       headers: { 'Content-Type': 'application/json' }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     return new Response(JSON.stringify({
       error: error.message,
       stack: error.stack
