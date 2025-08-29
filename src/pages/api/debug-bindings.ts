@@ -5,7 +5,7 @@ export const GET: APIRoute = async () => {
     // Verificar bindings disponibles
     const allKeys = Object.keys(globalThis)
     const dbKeys = allKeys.filter(key => 
-      key.includes('EMAIL_TRACKING') || key.includes('TRACK') || key.includes('EMAIL')
+      key.includes('DB') || key.includes('TRACK') || key.includes('EMAIL')
     )
     
     // Intentar acceder a la base de datos
