@@ -1,4 +1,4 @@
-name = "correo-solid"
+name = "mailing-tool"
 compatibility_date = "2024-06-01"
 
 
@@ -21,3 +21,4 @@ database_id = "a7644d6b-4ab2-406c-a069-405c201af1b3"
 [build]
 command = "pnpm run build"
 upload_dir = "dist"
+
