@@ -1,0 +1,168 @@
+---
+// src/pages/test-tracking.astro
+import Layout from '../layouts/Layout.astro'
+import { generateTrackingId, addTrackingPixel } from '../utils/tracking'
+
+// Generar ID de prueba
+const testTrackingId = generateTrackingId()
+const testEmailContent = '<h1>¡Hola! Este es un email de prueba</h1><p>Si ves esto, el tracking está funcionando.</p>'
+const emailWithTracking = addTrackingPixel(testEmailContent, testTrackingId)
+---
+
+<Layout title="Test Tracking System">
+  <div class="container mx-auto p-6 max-w-4xl">
+    <h1 class="text-3xl font-bold mb-6">🔍 Test del Sistema de Tracking</h1>
+    
+    <!-- Información del test -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+      <h2 class="text-lg font-semibold text-blue-800 mb-2">Test Tracking ID</h2>
+      <p class="font-mono text-blue-700">{testTrackingId}</p>
+      <p class="text-sm text-blue-600 mt-2">
+        Este ID se generó automáticamente para la prueba
+      </p>
+    </div>
+    
+    <!-- Simulación de email -->
+    <div class="bg-white border rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">📧 Simulación de Email</h2>
+      <div class="border rounded p-4 bg-gray-50">
+        <div set:html={emailWithTracking} />
+      </div>
+      <p class="text-sm text-gray-600 mt-2">
+        ⬆️ Este contenido simula cómo se ve un email con pixel de tracking
+      </p>
+    </div>
+    
+    <!-- Controles de testing -->
+    <div class="bg-white border rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">🧪 Controles de Prueba</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Cargar pixel manualmente -->
+        <div class="border rounded p-4">
+          <h3 class="font-semibold mb-2">1. Cargar Pixel</h3>
+          <button 
+            id="loadPixel" 
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+          >
+            Simular Apertura
+          </button>
+          <p class="text-xs text-gray-500 mt-2">
+            Carga el pixel de tracking manualmente
+          </p>
+        </div>
+        
+        <!-- Ver estadísticas -->
+        <div class="border rounded p-4">
+          <h3 class="font-semibold mb-2">2. Ver Stats</h3>
+          <button 
+            id="loadStats" 
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
+          >
+            Cargar Estadísticas
+          </button>
+          <p class="text-xs text-gray-500 mt-2">
+            Ver cuántas veces se abrió
+          </p>
+        </div>
+        
+        <!-- Limpiar logs -->
+        <div class="border rounded p-4">
+          <h3 class="font-semibold mb-2">3. Limpiar</h3>
+          <button 
+            id="clearLogs" 
+            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-full"
+          >
+            Limpiar Logs
+          </button>
+          <p class="text-xs text-gray-500 mt-2">
+            Limpiar el área de resultados
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div class="bg-white border rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">📊 Resultados</h2>
+      <div 
+        id="results" 
+        class="bg-gray-50 border rounded p-4 min-h-32 font-mono text-sm overflow-auto"
+      >
+        <p class="text-gray-500">Haz clic en los botones de arriba para probar el sistema...</p>
+      </div>
+    </div>
+  </div>
+  
+  <script define:vars={{ testTrackingId }}>
+    const results = document.getElementById('results')
+    
+    function addLog(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString()
+      const colors = {
+        info: 'text-blue-600',
+        success: 'text-green-600',
+        error: 'text-red-600',
+        warning: 'text-yellow-600'
+      }
+      
+      const logEntry = document.createElement('div')
+      logEntry.className = colors[type] || colors.info
+      logEntry.innerHTML = `[${timestamp}] ${message}`
+      
+      results.appendChild(logEntry)
+      results.scrollTop = results.scrollHeight
+    }
+    
+    // Botón: Cargar pixel
+    document.getElementById('loadPixel').addEventListener('click', async () => {
+      addLog('🔄 Cargando pixel de tracking...', 'info')
+      
+      try {
+        const response = await fetch(`/api/track/${testTrackingId}.png`)
+        
+        if (response.ok) {
+          addLog('✅ Pixel cargado correctamente', 'success')
+          addLog(`📊 Status: ${response.status}, Content-Type: ${response.headers.get('content-type')}`, 'info')
+        } else {
+          addLog(`❌ Error al cargar pixel: ${response.status}`, 'error')
+        }
+      } catch (error) {
+        addLog(`❌ Error de conexión: ${error.message}`, 'error')
+      }
+    })
+    
+    // Botón: Cargar estadísticas
+    document.getElementById('loadStats').addEventListener('click', async () => {
+      addLog('📈 Cargando estadísticas...', 'info')
+      
+      try {
+        const response = await fetch(`/api/stats/tracking?id=${testTrackingId}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          addLog(`📊 Total de aperturas: ${data.data.totalOpens}`, 'success')
+          if (data.data.firstOpen) {
+            addLog(`🕒 Primera apertura: ${data.data.firstOpen}`, 'success')
+          }
+          if (data.data.totalOpens > 0) {
+            addLog(`📋 Detalles: ${JSON.stringify(data.data.opens.map(o => ({ time: o.timestamp, agent: o.user_agent?.substring(0, 30) + '...' })))}`, 'info')
+          }
+        } else {
+          addLog(`❌ Error en stats: ${data.error}`, 'error')
+        }
+      } catch (error) {
+        addLog(`❌ Error al cargar stats: ${error.message}`, 'error')
+      }
+    })
+    
+    // Botón: Limpiar
+    document.getElementById('clearLogs').addEventListener('click', () => {
+      results.innerHTML = '<p class="text-gray-500">Logs limpiados. Prueba el sistema...</p>'
+    })
+    
+    // Cargar automáticamente al inicio
+    addLog('🚀 Sistema de tracking inicializado', 'success')
+    addLog(`🔑 Tracking ID: ${testTrackingId}`, 'info')
+  </script>
+</Layout>

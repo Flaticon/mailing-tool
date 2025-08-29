@@ -108,7 +108,10 @@ export async function POST({ request, locals }) {
         from: env.SENDER_EMAIL,
         to: emails,
         subject,
-        html: `<p>${content}</p>`,
+        html: emails.map(email => `
+  <p>${content}</p>
+  <img src="https://mailing-tool.pages.dev/api/track?id=${encodeURIComponent(email)}" width="1" height="1" style="display:none;" />
+`).join('<hr>'),
       }),
     });
 
