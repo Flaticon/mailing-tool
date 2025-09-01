@@ -1,4 +1,4 @@
-// src/pages/api/stats/tracking.ts - USAR CÓDIGO DEL DEBUG QUE FUNCIONA
+// src/pages/api/stats/tracking.ts - COPIA EXACTA DEL PATRON DEL DEBUG
 import type { APIRoute } from 'astro'
 
 export const GET: APIRoute = async ({ url }) => {
@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ url }) => {
       })
     }
     
-    // USAR EXACTAMENTE EL MISMO CÓDIGO QUE EN DEBUG
+    // USAR EXACTAMENTE EL MISMO PATRON QUE EL DEBUG EXITOSO
     const emailTrackingDB = (globalThis as any).EMAIL_TRACKING
     
     if (!emailTrackingDB) {
@@ -31,14 +31,18 @@ export const GET: APIRoute = async ({ url }) => {
       })
     }
     
-    // Obtener datos - SIMPLE
+    // MISMO TEST QUE EN DEBUG
+    let dbTest = null
+    try {
+      const result = await emailTrackingDB.prepare("SELECT 1 as test").first()
+      dbTest = { success: true, result }
+    } catch (e) {
+      dbTest = { success: false, error: e.message }
+    }
+    
+    // QUERY REAL
     const opensResult = await emailTrackingDB.prepare(`
-      SELECT 
-        tracking_id,
-        timestamp,
-        user_agent,
-        ip_address,
-        referer
+      SELECT tracking_id, timestamp, user_agent, ip_address, referer
       FROM email_opens 
       WHERE tracking_id = ?
       ORDER BY timestamp ASC
@@ -51,10 +55,8 @@ export const GET: APIRoute = async ({ url }) => {
       data: {
         trackingId,
         totalOpens: opens.length,
-        firstOpen: opens[0]?.timestamp || null,
-        lastOpen: opens[opens.length - 1]?.timestamp || null,
         opens: opens,
-        dataSource: 'D1 Database'
+        dbTest: dbTest
       }
     }), {
       headers: { 'Content-Type': 'application/json' }
@@ -63,7 +65,8 @@ export const GET: APIRoute = async ({ url }) => {
   } catch (error) {
     return new Response(JSON.stringify({
       success: false,
-      error: error.message
+      error: error.message,
+      stack: error.stack
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
