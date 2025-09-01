@@ -18,6 +18,7 @@
   "packageManager": "pnpm@10.11.1+sha512.e519b9f7639869dc8d5c3c5dfef73b3f091094b0a006d7317353c72b124e80e1afd429732e28705ad6bfa1ee879c1fce46c128ccebd3192101f43dd67c667912",
   "devDependencies": {
     "@astrojs/tailwind": "6.0.2",
+    "@cloudflare/workers-types": "^4.20250831.0",
     "@types/node": "^24.0.8",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
