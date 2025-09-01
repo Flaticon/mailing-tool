@@ -1,4 +1,4 @@
-// src/pages/api/stats/tracking.ts - VERSIÓN SIMPLIFICADA
+// src/pages/api/stats/tracking.ts - USAR CÓDIGO DEL DEBUG QUE FUNCIONA
 import type { APIRoute } from 'astro'
 
 export const GET: APIRoute = async ({ url }) => {
@@ -15,15 +15,15 @@ export const GET: APIRoute = async ({ url }) => {
       })
     }
     
-    // Conectar a D1 Database - EXACTAMENTE igual que en debug
-    const db = (globalThis as any).EMAIL_TRACKING
+    // USAR EXACTAMENTE EL MISMO CÓDIGO QUE EN DEBUG
+    const emailTrackingDB = (globalThis as any).EMAIL_TRACKING
     
-    if (!db) {
+    if (!emailTrackingDB) {
       return new Response(JSON.stringify({
         success: false,
-        error: 'Email tracking database not available',
+        error: 'EMAIL_TRACKING binding not found',
         debug: {
-          globalKeys: Object.keys(globalThis).filter(k => k.includes('DB') || k.includes('TRACK'))
+          availableKeys: Object.keys(globalThis).filter(k => k.includes('DB') || k.includes('TRACK'))
         }
       }), {
         status: 500,
@@ -31,8 +31,8 @@ export const GET: APIRoute = async ({ url }) => {
       })
     }
     
-    // Obtener información del tracking
-    const opensResult = await db.prepare(`
+    // Obtener datos - SIMPLE
+    const opensResult = await emailTrackingDB.prepare(`
       SELECT 
         tracking_id,
         timestamp,
@@ -46,18 +46,16 @@ export const GET: APIRoute = async ({ url }) => {
     
     const opens = opensResult.results || []
     
-    const stats = {
-      trackingId,
-      totalOpens: opens.length,
-      firstOpen: opens[0]?.timestamp || null,
-      lastOpen: opens[opens.length - 1]?.timestamp || null,
-      opens: opens,
-      dataSource: 'D1 Database'
-    }
-    
     return new Response(JSON.stringify({
       success: true,
-      data: stats
+      data: {
+        trackingId,
+        totalOpens: opens.length,
+        firstOpen: opens[0]?.timestamp || null,
+        lastOpen: opens[opens.length - 1]?.timestamp || null,
+        opens: opens,
+        dataSource: 'D1 Database'
+      }
     }), {
       headers: { 'Content-Type': 'application/json' }
     })
@@ -65,8 +63,7 @@ export const GET: APIRoute = async ({ url }) => {
   } catch (error) {
     return new Response(JSON.stringify({
       success: false,
-      error: error.message,
-      stack: error.stack
+      error: error.message
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
