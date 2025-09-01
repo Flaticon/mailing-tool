@@ -1,107 +1,102 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Script Corregido para test-tracking.astro</title>
-</head>
-<body>
-<!-- Reemplaza el <script> en tu test-tracking.astro con este código corregido -->
-<script>
-  // Variables desde Astro (esto ya está bien en tu código)
-  const testTrackingId = "tu-tracking-id-aqui"; // Será reemplazado por define:vars
-  
-  const results = document.getElementById('results');
-  
-  function addLog(message, type = 'info') {
-    const timestamp = new Date().toLocaleTimeString();
-    const colors = {
-      info: 'text-blue-600',
-      success: 'text-green-600',
-      error: 'text-red-600',
-      warning: 'text-yellow-600'
-    };
+<script define:vars={{ testTrackingId }}>
+  // Esperar a que el DOM esté completamente cargado
+  document.addEventListener('DOMContentLoaded', () => {
+    const results = document.getElementById('results')
+    const loadPixelBtn = document.getElementById('loadPixel')
+    const loadStatsBtn = document.getElementById('loadStats')
+    const clearLogsBtn = document.getElementById('clearLogs')
     
-    const logEntry = document.createElement('div');
-    logEntry.className = colors[type] || colors.info;
-    logEntry.innerHTML = `[${timestamp}] ${message}`;
-    
-    results.appendChild(logEntry);
-    results.scrollTop = results.scrollHeight;
-  }
-  
-  // Botón: Cargar pixel
-  document.getElementById('loadPixel').addEventListener('click', async () => {
-    addLog('🔄 Cargando pixel de tracking...', 'info');
-    
-    try {
-      const response = await fetch(`/track/${testTrackingId}.png`);
-      
-      if (response.ok) {
-        addLog('✅ Pixel cargado correctamente', 'success');
-        addLog(`📊 Status: ${response.status}, Content-Type: ${response.headers.get('content-type')}`, 'info');
-      } else {
-        addLog(`❌ Error al cargar pixel: ${response.status}`, 'error');
-      }
-    } catch (error) {
-      addLog(`❌ Error de conexión: ${error.message}`, 'error');
+    // Verificar que los elementos existan
+    if (!results || !loadPixelBtn || !loadStatsBtn || !clearLogsBtn) {
+      console.error('❌ No se encontraron todos los elementos del DOM')
+      return
     }
-  });
-  
-  // Botón: Cargar estadísticas - CORREGIDO
-  document.getElementById('loadStats').addEventListener('click', async () => {
-    addLog('📈 Cargando estadísticas...', 'info');
     
-    try {
-      // ✅ CORRECCIÓN 1: Agregado "await fetch"
-      // ✅ CORRECCIÓN 2: Cambiado ruta a "/api/stats/tracking"
-      const response = await fetch(`/api/stats/tracking?id=${testTrackingId}`);
-      
-      // Verificar si la respuesta es OK antes de parsear JSON
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    function addLog(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString()
+      const colors = {
+        info: 'text-blue-600',
+        success: 'text-green-600',
+        error: 'text-red-600',
+        warning: 'text-yellow-600'
       }
       
-      const data = await response.json();
+      const logEntry = document.createElement('div')
+      logEntry.className = colors[type] || colors.info
+      logEntry.innerHTML = `[${timestamp}] ${message}`
       
-      if (data.success) {
-        addLog(`📊 Total de aperturas: ${data.data.totalOpens}`, 'success');
+      results.appendChild(logEntry)
+      results.scrollTop = results.scrollHeight
+    }
+    
+    // Botón: Cargar pixel
+    loadPixelBtn.addEventListener('click', async () => {
+      addLog('🔄 Cargando pixel de tracking...', 'info')
+      
+      try {
+        const response = await fetch(`/track/${testTrackingId}.png`)
         
-        // Mostrar detalles de las aperturas si existen
-        if (data.data.opens && data.data.opens.length > 0) {
-          addLog(`🕒 Primera apertura: ${data.data.opens[0].timestamp}`, 'success');
-          
-          // Mostrar resumen de cada apertura
-          data.data.opens.forEach((open, index) => {
-            const userAgent = open.user_agent ? 
-              open.user_agent.substring(0, 50) + '...' : 
-              'Unknown';
-            addLog(`  ${index + 1}. ${new Date(open.timestamp).toLocaleString()} - ${userAgent}`, 'info');
-          });
+        if (response.ok) {
+          addLog('✅ Pixel cargado correctamente', 'success')
+          addLog(`📊 Status: ${response.status}, Content-Type: ${response.headers.get('content-type')}`, 'info')
         } else {
-          addLog('ℹ️ No hay aperturas registradas aún', 'warning');
+          addLog(`❌ Error al cargar pixel: ${response.status}`, 'error')
+        }
+      } catch (error) {
+        addLog(`❌ Error de conexión: ${error.message}`, 'error')
+      }
+    })
+    
+    // Botón: Cargar estadísticas - CORREGIDO con await fetch
+    loadStatsBtn.addEventListener('click', async () => {
+      addLog('📈 Cargando estadísticas...', 'info')
+      
+      try {
+        // ✅ CORRECCIÓN PRINCIPAL: await fetch agregado
+        const response = await fetch(`/stats/tracking?id=${testTrackingId}`)
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
         
-        // Mostrar información de debug si existe
-        if (data.data.dbTest) {
-          addLog(`🔧 DB Test: ${JSON.stringify(data.data.dbTest)}`, 'info');
+        const data = await response.json()
+        
+        if (data.success) {
+          addLog(`📊 Total de aperturas: ${data.data.totalOpens}`, 'success')
+          
+          if (data.data.opens && data.data.opens.length > 0) {
+            addLog(`🕒 Primera apertura: ${data.data.opens[0].timestamp}`, 'success')
+            
+            data.data.opens.forEach((open, index) => {
+              const userAgent = open.user_agent ? 
+                open.user_agent.substring(0, 50) + '...' : 
+                'Unknown'
+              addLog(`  ${index + 1}. ${new Date(open.timestamp).toLocaleString()} - ${userAgent}`, 'info')
+            })
+          } else {
+            addLog('ℹ️ No hay aperturas registradas aún', 'warning')
+          }
+          
+          if (data.data.dbTest) {
+            addLog(`🔧 DB Test: ${JSON.stringify(data.data.dbTest)}`, 'info')
+          }
+        } else {
+          addLog(`❌ Error en stats: ${data.error}`, 'error')
         }
-      } else {
-        addLog(`❌ Error en stats: ${data.error}`, 'error');
+      } catch (error) {
+        addLog(`❌ Error al cargar stats: ${error.message}`, 'error')
+        console.error('Error completo:', error)
       }
-    } catch (error) {
-      addLog(`❌ Error al cargar stats: ${error.message}`, 'error');
-      console.error('Error completo:', error);
-    }
-  });
-  
-  // Botón: Limpiar
-  document.getElementById('clearLogs').addEventListener('click', () => {
-    results.innerHTML = '<p class="text-gray-500">Logs limpiados. Prueba el sistema...</p>';
-  });
-  
-  // Cargar automáticamente al inicio
-  addLog('🚀 Sistema de tracking inicializado', 'success');
-  addLog(`🔑 Tracking ID: ${testTrackingId}`, 'info');
-  addLog('ℹ️ Usa los botones de arriba para probar el sistema', 'info');
+    })
+    
+    // Botón: Limpiar
+    clearLogsBtn.addEventListener('click', () => {
+      results.innerHTML = '<p class="text-gray-500">Logs limpiados. Prueba el sistema...</p>'
+    })
+    
+    // Cargar automáticamente al inicio
+    addLog('🚀 Sistema de tracking inicializado', 'success')
+    addLog(`🔑 Tracking ID: ${testTrackingId}`, 'info')
+    addLog('ℹ️ Usa los botones de arriba para probar el sistema', 'info')
+  })
 </script>
-</body>
-</html>
