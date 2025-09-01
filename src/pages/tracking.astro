@@ -102,6 +102,11 @@
   addLog('🚀 Sistema de tracking inicializado', 'success');
   addLog(`🔑 Tracking ID: ${testTrackingId}`, 'info');
   addLog('ℹ️ Usa los botones de arriba para probar el sistema', 'info');
+
+console.log('Probando rutas:');
+console.log('- Pixel:', `/track/${testTrackingId}.png`);
+console.log('- Stats:', `/api/stats/tracking?id=${testTrackingId}`);
 </script>
 </body>
 </html>
+
