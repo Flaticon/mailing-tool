@@ -119,7 +119,7 @@ const emailWithTracking = addTrackingPixel(testEmailContent, testTrackingId)
       addLog('🔄 Cargando pixel de tracking...', 'info')
       
       try {
-        const response = await fetch(`/api/track/${testTrackingId}.png`)
+        const response = await fetch(`/track/${testTrackingId}.png`)
         
         if (response.ok) {
           addLog('✅ Pixel cargado correctamente', 'success')
@@ -137,7 +137,7 @@ const emailWithTracking = addTrackingPixel(testEmailContent, testTrackingId)
       addLog('📈 Cargando estadísticas...', 'info')
       
       try {
-        const response = await fetch(`/api/stats/tracking?id=${testTrackingId}`)
+        const response = (`/stats/tracking?id=${testTrackingId}`)
         const data = await response.json()
         
         if (data.success) {
