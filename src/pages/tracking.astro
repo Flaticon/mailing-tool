@@ -1,38 +1,249 @@
 ---
-// src/pages/test-simple.astro
+// src/pages/test-tracking-fixed.astro
+// Versión standalone sin dependencias externas
+
+// Generar ID de tracking simple
+const testTrackingId = `track_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+// HTML de ejemplo con pixel
+const testEmailContent = '<h1>¡Hola! Este es un email de prueba</h1><p>Si ves esto, el tracking está funcionando.</p>';
+const emailWithTracking = testEmailContent + `<img src="/track/${testTrackingId}.png" width="1" height="1" style="display:none;" alt="" />`;
 ---
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Test Simple</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Tracking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Test Simple - Funciona</h1>
-    <div id="results">Esperando...</div>
+<body class="bg-gray-50">
+  <div class="container mx-auto p-6 max-w-4xl">
+    <h1 class="text-3xl font-bold mb-6">🔍 Test del Sistema de Tracking</h1>
     
-    <button id="testBtn">Test Fetch</button>
+    <!-- Información del test -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+      <h2 class="text-lg font-semibold text-blue-800 mb-2">Test Tracking ID</h2>
+      <p class="font-mono text-blue-700">{testTrackingId}</p>
+      <p class="text-sm text-blue-600 mt-2">
+        Este ID se generó automáticamente para la prueba
+      </p>
+    </div>
     
-    <script>
-        console.log('✅ Script cargado');
+    <!-- Simulación de email -->
+    <div class="bg-white border rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">📧 Simulación de Email</h2>
+      <div class="border rounded p-4 bg-gray-50">
+        <div id="email-content"></div>
+      </div>
+      <p class="text-sm text-gray-600 mt-2">
+        ⬆️ Este contenido simula cómo se ve un email con pixel de tracking
+      </p>
+    </div>
+    
+    <!-- Controles de testing -->
+    <div class="bg-white border rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">🧪 Controles de Prueba</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Cargar pixel manualmente -->
+        <div class="border rounded p-4">
+          <h3 class="font-semibold mb-2">1. Cargar Pixel</h3>
+          <button 
+            id="loadPixel" 
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+          >
+            Simular Apertura
+          </button>
+          <p class="text-xs text-gray-500 mt-2">
+            Carga el pixel de tracking manualmente
+          </p>
+        </div>
         
-        document.getElementById('testBtn')?.addEventListener('click', async () => {
-            console.log('Click!');
-            const div = document.getElementById('results');
-            if (div) {
-                div.textContent = 'Botón clickeado a las ' + new Date().toLocaleTimeString();
+        <!-- Ver estadísticas -->
+        <div class="border rounded p-4">
+          <h3 class="font-semibold mb-2">2. Ver Stats</h3>
+          <button 
+            id="loadStats" 
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
+          >
+            Cargar Estadísticas
+          </button>
+          <p class="text-xs text-gray-500 mt-2">
+            Ver cuántas veces se abrió
+          </p>
+        </div>
+        
+        <!-- Limpiar logs -->
+        <div class="border rounded p-4">
+          <h3 class="font-semibold mb-2">3. Limpiar</h3>
+          <button 
+            id="clearLogs" 
+            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-full"
+          >
+            Limpiar Logs
+          </button>
+          <p class="text-xs text-gray-500 mt-2">
+            Limpiar el área de resultados
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div class="bg-white border rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">📊 Resultados</h2>
+      <div 
+        id="results" 
+        class="bg-gray-50 border rounded p-4 min-h-32 font-mono text-sm overflow-auto"
+      >
+        <p class="text-gray-500">Haz clic en los botones de arriba para probar el sistema...</p>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Variables
+    const testTrackingId = document.querySelector('.font-mono.text-blue-700').textContent;
+    const emailContent = `{emailWithTracking}`;
+    
+    console.log('🚀 Script iniciado');
+    console.log('📍 Tracking ID:', testTrackingId);
+    
+    // Mostrar el contenido del email
+    document.getElementById('email-content').innerHTML = emailContent;
+    
+    // Función para agregar logs
+    function addLog(message, type = 'info') {
+      const results = document.getElementById('results');
+      const timestamp = new Date().toLocaleTimeString();
+      const colors = {
+        info: 'text-blue-600',
+        success: 'text-green-600',
+        error: 'text-red-600',
+        warning: 'text-yellow-600'
+      };
+      
+      const logEntry = document.createElement('div');
+      logEntry.className = colors[type] || colors.info;
+      logEntry.textContent = `[${timestamp}] ${message}`;
+      
+      results.appendChild(logEntry);
+      results.scrollTop = results.scrollHeight;
+      
+      console.log(`[${type}] ${message}`);
+    }
+    
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('✅ DOM Ready');
+      
+      const loadPixelBtn = document.getElementById('loadPixel');
+      const loadStatsBtn = document.getElementById('loadStats');
+      const clearLogsBtn = document.getElementById('clearLogs');
+      
+      // Mensaje inicial
+      addLog('🚀 Sistema de tracking inicializado', 'success');
+      addLog(`🔑 Tracking ID: ${testTrackingId}`, 'info');
+      
+      // Botón: Cargar pixel
+      if (loadPixelBtn) {
+        loadPixelBtn.addEventListener('click', async () => {
+          addLog('🔄 Cargando pixel de tracking...', 'info');
+          
+          try {
+            const url = `/track/${testTrackingId}.png`;
+            addLog(`📡 Fetching: ${url}`, 'info');
+            
+            const response = await fetch(url);
+            
+            if (response.ok) {
+              addLog('✅ Pixel cargado correctamente', 'success');
+              addLog(`📊 Status: ${response.status}, Type: ${response.headers.get('content-type')}`, 'info');
+            } else {
+              addLog(`❌ Error al cargar pixel: ${response.status}`, 'error');
+            }
+          } catch (error) {
+            addLog(`❌ Error de conexión: ${error.message}`, 'error');
+            console.error(error);
+          }
+        });
+      }
+      
+      // Botón: Cargar estadísticas - CORREGIDO
+      if (loadStatsBtn) {
+        loadStatsBtn.addEventListener('click', async () => {
+          addLog('📈 Cargando estadísticas...', 'info');
+          
+          try {
+            // Probar diferentes rutas posibles
+            const routes = [
+              `/api/stats/tracking?id=${testTrackingId}`,
+              `/stats/tracking?id=${testTrackingId}`,
+              `/functions/stats/tracking?id=${testTrackingId}`
+            ];
+            
+            let data = null;
+            let successUrl = null;
+            
+            for (const url of routes) {
+              addLog(`🔍 Probando ruta: ${url}`, 'info');
+              
+              try {
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                  data = await response.json();
+                  successUrl = url;
+                  addLog(`✅ Ruta funcional: ${url}`, 'success');
+                  break;
+                } else {
+                  addLog(`❌ Ruta ${url} devolvió: ${response.status}`, 'warning');
+                }
+              } catch (e) {
+                addLog(`⚠️ Error en ${url}: ${e.message}`, 'warning');
+              }
             }
             
-            // Test fetch simple
-            try {
-                const response = await fetch('/track/test123.png');
-                console.log('Response:', response.status);
-            } catch (e) {
-                console.error('Error:', e);
+            if (data && data.success) {
+              addLog(`📊 Total de aperturas: ${data.data.totalOpens}`, 'success');
+              
+              if (data.data.opens && data.data.opens.length > 0) {
+                addLog('📋 Detalles de aperturas:', 'info');
+                data.data.opens.forEach((open, index) => {
+                  const time = new Date(open.timestamp).toLocaleString();
+                  addLog(`  ${index + 1}. ${time}`, 'info');
+                });
+              } else {
+                addLog('ℹ️ No hay aperturas registradas aún', 'warning');
+              }
+              
+              if (data.data.dbTest) {
+                addLog(`🔧 DB Status: ${data.data.dbTest.success ? 'OK' : 'Error'}`, 'info');
+              }
+            } else if (data) {
+              addLog(`❌ Error en respuesta: ${data.error || 'Unknown'}`, 'error');
+            } else {
+              addLog('❌ No se pudo conectar a ninguna ruta de stats', 'error');
+              addLog('💡 Verifica que el endpoint esté configurado correctamente', 'warning');
             }
+          } catch (error) {
+            addLog(`❌ Error general: ${error.message}`, 'error');
+            console.error('Error completo:', error);
+          }
         });
-    </script>
+      }
+      
+      // Botón: Limpiar
+      if (clearLogsBtn) {
+        clearLogsBtn.addEventListener('click', () => {
+          const results = document.getElementById('results');
+          results.innerHTML = '<p class="text-gray-500">Logs limpiados. Prueba el sistema...</p>';
+          addLog('🧹 Logs limpiados', 'info');
+        });
+      }
+    });
+  </script>
 </body>
-</html>
 </html>
