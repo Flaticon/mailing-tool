@@ -153,10 +153,10 @@ const emailWithTracking = testEmailContent + `<img src="/api/stats/pixel?id=${te
           addLog('🔄 Cargando pixel de tracking...', 'info');
           
           try {
-            const url = `/api/stats/pixel?id=${testTrackingId}`;
+            const url = `/api/stats/pixel`;
             addLog(`📡 Fetching: ${url}`, 'info');
             
-            const response = await fetch(url);
+            const response = await fetch(url, { method:'POST',body:JSON.stringify({id:testTrackingId})});
             
             if (response.ok) {
               addLog('✅ Pixel cargado correctamente', 'success');
@@ -180,8 +180,6 @@ const emailWithTracking = testEmailContent + `<img src="/api/stats/pixel?id=${te
             // Probar diferentes rutas posibles
             const routes = [
               `/api/stats/tracking?id=${testTrackingId}`,
-              `/stats/tracking?id=${testTrackingId}`,
-              `/functions/stats/tracking?id=${testTrackingId}`
             ];
             
             let data = null;

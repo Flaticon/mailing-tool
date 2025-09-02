@@ -11,9 +11,10 @@ const TRANSPARENT_PIXEL = new Uint8Array([
   0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82
 ])
 
-export const GET: APIRoute = async ({ url, request }) => {
-  try {
-    const trackingId = url.searchParams.get('id')
+export const POST: APIRoute = async ({ url, request, locals }) => {
+  try { 
+    const body : any = await request.json()
+    const trackingId = body.id
     
     if (!trackingId) {
       // Devolver pixel transparente aunque no haya ID
@@ -28,7 +29,7 @@ export const GET: APIRoute = async ({ url, request }) => {
     }
 
     // Registrar el tracking en la base de datos
-    const emailTrackingDB = (globalThis as any).EMAIL_TRACKING
+    const emailTrackingDB = locals.runtime.env.EMAIL_TRACKING
     
     if (emailTrackingDB) {
       try {

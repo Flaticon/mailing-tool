@@ -1,7 +1,7 @@
 // src/pages/api/stats/tracking.ts - COPIA EXACTA DEL PATRON DEL DEBUG
 import type { APIRoute } from 'astro'
 
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url, locals }) => { 
   try {
     const trackingId = url.searchParams.get('id')
     
@@ -15,8 +15,8 @@ export const GET: APIRoute = async ({ url }) => {
       })
     }
     
-    // USAR EXACTAMENTE EL MISMO PATRON QUE EL DEBUG EXITOSO
-    const emailTrackingDB = (globalThis as any).EMAIL_TRACKING
+    // USAR EXACTAMENTE EL MISMO PATRON QUE EL DEBUG 
+    const emailTrackingDB = locals.runtime.env.EMAIL_TRACKING 
     
     if (!emailTrackingDB) {
       return new Response(JSON.stringify({

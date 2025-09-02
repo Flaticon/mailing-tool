@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview": "npm run types && wrangler pages dev ./dist",
+    "astro": "astro",
+    "types": "wrangler types ./src/worker-configuration.d.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.0",

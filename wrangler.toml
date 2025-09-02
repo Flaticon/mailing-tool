@@ -12,12 +12,14 @@ SENDER_EMAIL = "onboarding@resend.dev"
 binding = "DB"  
 database_name = "correos"
 database_id = "f0dfbec2-8b93-4e06-b7a7-8c898916f445"  
+preview_database_id = "DB" # Required for Pages local development
+
 
 [[d1_databases]]
 binding = "EMAIL_TRACKING"
 database_name = "email-tracking-db"
 database_id = "a7644d6b-4ab2-406c-a069-405c201af1b3"
-
+preview_database_id = "EMAIL_TRACKING" # Required for Pages local develo
 
 [build]
 command = "npm run build"
