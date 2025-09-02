@@ -7,7 +7,7 @@ const testTrackingId = `track_${Date.now()}_${Math.random().toString(36).substr(
 
 // HTML de ejemplo con pixel
 const testEmailContent = '<h1>¡Hola! Este es un email de prueba</h1><p>Si ves esto, el tracking está funcionando.</p>';
-const emailWithTracking = testEmailContent + `<img src="/track/${testTrackingId}.png" width="1" height="1" style="display:none;" alt="" />`;
+const emailWithTracking = testEmailContent + `<img src="/api/stats/pixel?id=${testTrackingId}" width="1" height="1" style="display:none;" alt="" />`;
 ---
 
 <!DOCTYPE html>
@@ -147,13 +147,13 @@ const emailWithTracking = testEmailContent + `<img src="/track/${testTrackingId}
       addLog('🚀 Sistema de tracking inicializado', 'success');
       addLog(`🔑 Tracking ID: ${testTrackingId}`, 'info');
       
-      // Botón: Cargar pixel
+      // Botón: Cargar pixel - CORREGIDO
       if (loadPixelBtn) {
         loadPixelBtn.addEventListener('click', async () => {
           addLog('🔄 Cargando pixel de tracking...', 'info');
           
           try {
-            const url = `/track/${testTrackingId}.png`;
+            const url = `/api/stats/pixel?id=${testTrackingId}`;
             addLog(`📡 Fetching: ${url}`, 'info');
             
             const response = await fetch(url);
@@ -171,7 +171,7 @@ const emailWithTracking = testEmailContent + `<img src="/track/${testTrackingId}
         });
       }
       
-      // Botón: Cargar estadísticas - CORREGIDO
+      // Botón: Cargar estadísticas
       if (loadStatsBtn) {
         loadStatsBtn.addEventListener('click', async () => {
           addLog('📈 Cargando estadísticas...', 'info');
